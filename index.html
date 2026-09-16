@@ -9,8 +9,13 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
       margin: 0;
+    }
+
+    body {
       min-height: 100vh;
       background:
         radial-gradient(circle at top, rgba(50,205,50,0.18), transparent 35%),
@@ -20,17 +25,21 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 0;
+      overflow: auto;
     }
 
     .game-container {
+      width: 100vw;
+      min-height: 100vh;
       display: flex;
       gap: 28px;
-      align-items: flex-start;
-      padding: 20px;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      border-radius: 0;
       box-shadow: 0 15px 30px rgba(0,0,0,0.4);
     }
 
@@ -40,6 +49,7 @@
       border-radius: 14px;
       padding: 12px;
       border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
     }
 
     h1 {
@@ -51,6 +61,9 @@
     }
 
     canvas {
+      width: min(70vw, 70vh, 600px);
+      height: min(70vw, 70vh, 600px);
+      aspect-ratio: 1 / 1;
       background:
         linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03)),
         #000;
@@ -62,6 +75,37 @@
         0 0 20px rgba(0,0,0,0.5);
       position: relative;
       max-width: 100%;
+    }
+
+    .game-message {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(180, 30, 30, 0.9);
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .game-message.visible {
+      display: block;
+    }
+
+    .pause-banner {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 193, 7, 0.2);
+      color: #fff3b0;
+      border: 1px solid rgba(255, 193, 7, 0.5);
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .pause-banner.visible {
+      display: block;
     }
 
     .side-ui {
@@ -233,16 +277,31 @@
     @media (max-width: 700px) {
       body {
         padding: 10px;
+        align-items: flex-start;
+        overflow-y: auto;
       }
 
       .game-container {
+        width: 100%;
+        min-height: 100vh;
         flex-direction: column;
         align-items: center;
-        width: 100%;
+        justify-content: flex-start;
+        gap: 18px;
+        padding: 12px;
       }
 
       .side-ui {
         width: min(100%, 420px);
+      }
+
+      .game-box {
+        width: 100%;
+      }
+
+      canvas {
+        width: min(92vw, 500px);
+        height: min(92vw, 500px);
       }
 
       .mobile-controls {
@@ -258,8 +317,11 @@
       <h1>Abubaker Waleed Game</h1>
       <canvas id="game" width="400" height="400"></canvas>
 
+      <div id="gameMessage" class="game-message"></div>
+      <div id="pauseBanner" class="pause-banner">Paused — Press Space to Resume</div>
+
       <div class="controls">
-        Use Arrow Keys or W, A, S, D to move
+        Use Arrow Keys or W, A, S, D to move • Press Space to pause
       </div>
 
       <div class="mobile-controls" aria-label="Touch controls">
@@ -319,6 +381,8 @@
     const timeText = document.getElementById("time");
     const historyList = document.getElementById("history");
     const colorButtons = document.getElementById("colorButtons");
+    const gameMessage = document.getElementById("gameMessage");
+    const pauseBanner = document.getElementById("pauseBanner");
 
     const gridSize = 20;
     const tileCount = canvas.width / gridSize;
@@ -333,6 +397,7 @@
     let clockLoop;
     let secondsPlayed = 0;
     let gameRunning = false;
+    let paused = false;
 
     let bestScore = Number(localStorage.getItem("bestScore")) || 0;
     let scoreHistory = JSON.parse(localStorage.getItem("scoreHistory") || "[]");
@@ -352,6 +417,11 @@
     displayColorButtons();
 
     function resetGame() {
+      gameMessage.classList.remove("visible");
+      gameMessage.textContent = "";
+      pauseBanner.classList.remove("visible");
+      paused = false;
+
       snake = [
         { x: 10, y: 10 },
         { x: 9, y: 10 },
@@ -382,7 +452,7 @@
     }
 
     function updateClock() {
-      if (!gameRunning) return;
+      if (!gameRunning || paused) return;
 
       secondsPlayed++;
 
@@ -392,6 +462,23 @@
       timeText.textContent =
         String(minutes).padStart(2, "0") + ":" +
         String(seconds).padStart(2, "0");
+    }
+
+    function togglePause() {
+      if (!gameRunning) return;
+
+      paused = !paused;
+
+      if (paused) {
+        clearInterval(gameLoop);
+        clearInterval(clockLoop);
+        pauseBanner.classList.add("visible");
+        return;
+      }
+
+      pauseBanner.classList.remove("visible");
+      gameLoop = setInterval(tick, 120);
+      clockLoop = setInterval(updateClock, 1000);
     }
 
     function placeFood() {
@@ -458,7 +545,6 @@
       const newDir = map[directionName];
       if (!newDir) return;
 
-      // Prevent reverse direction
       if (directionName === "up" && direction.y === 1) return;
       if (directionName === "down" && direction.y === -1) return;
       if (directionName === "left" && direction.x === 1) return;
@@ -470,6 +556,23 @@
     function changeDirection(event) {
       const key = event.key.toLowerCase();
 
+      if (event.code === "Space") {
+        event.preventDefault();
+        togglePause();
+        return;
+      }
+
+      if (
+        key === "arrowup" ||
+        key === "arrowdown" ||
+        key === "arrowleft" ||
+        key === "arrowright"
+      ) {
+        event.preventDefault();
+      }
+
+      if (paused) return;
+
       if (key === "arrowup" || key === "w") setMovementDirection("up");
       if (key === "arrowdown" || key === "s") setMovementDirection("down");
       if (key === "arrowleft" || key === "a") setMovementDirection("left");
@@ -477,6 +580,8 @@
     }
 
     function tick() {
+      if (paused) return;
+
       direction = nextDirection;
 
       const head = {
@@ -522,6 +627,7 @@
 
     function endGame() {
       gameRunning = false;
+      paused = false;
 
       clearInterval(gameLoop);
       clearInterval(clockLoop);
@@ -536,12 +642,16 @@
       localStorage.setItem("scoreHistory", JSON.stringify(scoreHistory));
       displayHistory();
 
-      alert(
-        "Game Over!\nScore: " +
+      pauseBanner.classList.remove("visible");
+
+      gameMessage.textContent =
+        "Game Over! Score: " +
         score +
-        "\nTime: " +
-        timeText.textContent
-      );
+        " | Time: " +
+        timeText.textContent +
+        " — Press New Game to play again.";
+
+      gameMessage.classList.add("visible");
     }
 
     function displayHistory() {
@@ -599,7 +709,11 @@
     document.addEventListener("keydown", changeDirection);
 
     document.querySelectorAll(".mobile-btn").forEach(button => {
-      button.addEventListener("click", function () {
+      button.addEventListener("pointerdown", function (event) {
+        event.preventDefault();
+
+        if (paused) return;
+
         const dir = this.getAttribute("data-dir");
         setMovementDirection(dir);
       });
