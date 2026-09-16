@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photos & Videos</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Italic, sans-serif;
+            background-color: #f2f2f2;
+            color: #222;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+        }
+
+        .gallery {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .gallery h2 {
+            margin-top: 40px;
+            border-bottom: 2px solid #222;
+            padding-bottom: 10px;
+        }
+
+        .photos,
+        .videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .card img,
+        .card video {
+            width: 100%;
+            display: block;
+        }
+
+        .card p {
+            padding: 15px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            background: #222;
+            color: white;
+            padding: 20px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Abubaker site</h1>
+        <p></p>
+    </header>
+
+    <main class="gallery">
+
+        <!-- PHOTOS -->
+        <h2>📷 Photos</h2>
+
+        <div class="photos">
+
+            <div class="card">
+                <img src="images/89" alt="Photo 1">
+                <p>study piture 1</p>
+            </div>
+
+            <div class="card">
+                <img src="images/6767" alt="Photo 2">
+                <p>Beautiful Photo 2</p>
+            </div>
+
+            <div class="card">
+                <img src="images/photo3.jpg" alt="Photo 3">
+                <p>Beautiful Photo 3</p>
+            </div>
+
+        </div>
+
+
+        <!-- VIDEOS -->
+        <h2>🎬 Videos</h2>
+
+        <div class=" intersting videos">
+
+            <div class="card">
+                <video controls>
+                    <source src="videos/044359.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <p>My First Video</p>
+            </div>
+
+            <div class="card">
+                <video controls>
+                    <source src="videos/video2.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <p>My Second Video</p>
+            </div>
+
+            <div class="card">
+                <video controls>
+                    <source src="videos/video3.mp4" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                <p>My Third Video</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <p>© 2026 My Media Gallery</p>
+    </footer>
+
+</body>
+</html>
