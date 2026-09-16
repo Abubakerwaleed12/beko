@@ -1,150 +1,611 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Photos & Videos</title>
+  <meta charset="UTF-8">
+  <title>Abubaker Waleed Game</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            margin: 0;
-            font-family: Italic, sans-serif;
-            background-color: #f2f2f2;
-            color: #222;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(50,205,50,0.18), transparent 35%),
+        linear-gradient(135deg, #0d0d0d, #1a1a1a 40%, #0f0f0f);
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-        header {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 30px;
-        }
+    .game-container {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      padding: 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    }
 
-        header h1 {
-            margin: 0 0 10px;
-        }
+    .game-box {
+      text-align: center;
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
 
-        .gallery {
-            width: 90%;
-            max-width: 1200px;
-            margin: 30px auto;
-        }
+    h1 {
+      color: #7CFC00;
+      margin-top: 0;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(124,252,0,0.5);
+    }
 
-        .gallery h2 {
-            margin-top: 40px;
-            border-bottom: 2px solid #222;
-            padding-bottom: 10px;
-        }
+    canvas {
+      background:
+        linear-gradient(rgba(255,255,255,0.03), rgba(255,255,255,0.03)),
+        #000;
+      border: 4px solid #f2f2f2;
+      border-radius: 8px;
+      display: block;
+      box-shadow:
+        inset 0 0 15px rgba(255,255,255,0.12),
+        0 0 20px rgba(0,0,0,0.5);
+      position: relative;
+      max-width: 100%;
+    }
 
-        .photos,
-        .videos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
+    .side-ui {
+      width: 260px;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(255,255,255,0.02),
+          rgba(255,255,255,0.02) 2px,
+          rgba(0,0,0,0.03) 2px,
+          rgba(0,0,0,0.03) 6px
+        ),
+        #242424;
+      border: 2px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+    }
 
-        .card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
+    .side-ui h2 {
+      margin-top: 0;
+      color: #32cd32;
+      text-align: center;
+      font-size: 20px;
+    }
 
-        .card img,
-        .card video {
-            width: 100%;
-            display: block;
-        }
+    .stat {
+      background: linear-gradient(180deg, #323232, #262626);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 17px;
+      box-shadow: inset 0 0 8px rgba(255,255,255,0.02);
+    }
 
-        .card p {
-            padding: 15px;
-            margin: 0;
-            font-weight: bold;
-        }
+    .stat span {
+      float: right;
+      color: #ffd700;
+      font-weight: bold;
+    }
 
-        footer {
-            text-align: center;
-            background: #222;
-            color: white;
-            padding: 20px;
-            margin-top: 50px;
-        }
-    </style>
+    .section-title {
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 8px;
+      margin-top: 22px;
+      color: #dfe8ff;
+      font-size: 15px;
+    }
+
+    .support-box {
+      margin-top: 14px;
+      padding: 12px 10px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #2d2d2d, #1d1d1d);
+      border: 1px solid #3b3b3b;
+      color: #f1f1f1;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .support-box strong {
+      color: #7CFC00;
+    }
+
+    .color-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .color-button {
+      padding: 8px;
+      border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      background: #4a4a4a;
+      transition: 0.2s ease;
+    }
+
+    .color-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .color-button.selected {
+      border-color: white;
+      box-shadow: 0 0 8px rgba(255,255,255,0.4);
+    }
+
+    .color-button.locked {
+      background: #444 !important;
+      color: #999;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #history {
+      padding-left: 20px;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    #history li {
+      margin: 7px 0;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    button.new-game {
+      width: 100%;
+      padding: 11px;
+      margin-top: 18px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #52d652, #2ea133);
+      color: #081008;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(50,205,50,0.4);
+    }
+
+    button.new-game:hover {
+      background: linear-gradient(180deg, #69e569, #3bbd42);
+    }
+
+    .controls {
+      margin-top: 12px;
+      color: #d9d9d9;
+      font-size: 14px;
+    }
+
+    .mobile-controls {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      margin-top: 16px;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .mobile-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .mobile-btn {
+      width: 60px;
+      height: 60px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #3b3b3b, #202020);
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .mobile-btn:active {
+      transform: scale(0.96);
+      background: linear-gradient(180deg, #494949, #2b2b2b);
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 10px;
+      }
+
+      .game-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+
+      .side-ui {
+        width: min(100%, 420px);
+      }
+
+      .mobile-controls {
+        display: flex;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="game-container">
+    <div class="game-box">
+      <h1>Abubaker Waleed Game</h1>
+      <canvas id="game" width="400" height="400"></canvas>
 
-    <header>
-        <h1>Abubaker site</h1>
-        <p></p>
-    </header>
+      <div class="controls">
+        Use Arrow Keys or W, A, S, D to move
+      </div>
 
-    <main class="gallery">
+      <div class="mobile-controls" aria-label="Touch controls">
+        <button class="mobile-btn" data-dir="up" aria-label="Up">↑</button>
 
-        <!-- PHOTOS -->
-        <h2>📷 Photos</h2>
-
-        <div class="photos">
-
-            <div class="card">
-                <img src="images/89" alt="Photo 1">
-                <p>study piture 1</p>
-            </div>
-
-            <div class="card">
-                <img src="images/6767" alt="Photo 2">
-                <p>Beautiful Photo 2</p>
-            </div>
-
-            <div class="card">
-                <img src="images/photo3.jpg" alt="Photo 3">
-                <p>Beautiful Photo 3</p>
-            </div>
-
+        <div class="mobile-row">
+          <button class="mobile-btn" data-dir="left" aria-label="Left">←</button>
+          <button class="mobile-btn" data-dir="down" aria-label="Down">↓</button>
+          <button class="mobile-btn" data-dir="right" aria-label="Right">→</button>
         </div>
+      </div>
+    </div>
 
+    <div class="side-ui">
+      <h2>Game Info</h2>
 
-        <!-- VIDEOS -->
-        <h2>🎬 Videos</h2>
+      <div class="stat">
+        Score:
+        <span id="score">0</span>
+      </div>
 
-        <div class=" intersting videos">
+      <div class="stat">
+        Best:
+        <span id="best">0</span>
+      </div>
 
-            <div class="card">
-                <video controls>
-                    <source src="videos/044359.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <p>My First Video</p>
-            </div>
+      <div class="stat">
+        Time:
+        <span id="time">00:00</span>
+      </div>
 
-            <div class="card">
-                <video controls>
-                    <source src="videos/video2.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <p>My Second Video</p>
-            </div>
+      <div class="support-box">
+        <strong>Support:</strong><br>
+        01125377213
+      </div>
 
-            <div class="card">
-                <video controls>
-                    <source src="videos/video3.mp4" type="video/mp4">
-                    Your browser does not support video.
-                </video>
-                <p>My Third Video</p>
-            </div>
+      <h3 class="section-title">Snake Colors</h3>
+      <div class="color-buttons" id="colorButtons"></div>
 
-        </div>
+      <h3 class="section-title">Score History</h3>
+      <ol id="history">
+        <li>No games played</li>
+      </ol>
 
-    </main>
+      <button class="new-game" onclick="startNewGame()">
+        New Game
+      </button>
+    </div>
+  </div>
 
-    <footer>
-        <p>© 2026 My Media Gallery</p>
-    </footer>
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
 
+    const scoreText = document.getElementById("score");
+    const bestText = document.getElementById("best");
+    const timeText = document.getElementById("time");
+    const historyList = document.getElementById("history");
+    const colorButtons = document.getElementById("colorButtons");
+
+    const gridSize = 20;
+    const tileCount = canvas.width / gridSize;
+
+    let snake;
+    let direction;
+    let nextDirection;
+    let food;
+    let score = 0;
+
+    let gameLoop;
+    let clockLoop;
+    let secondsPlayed = 0;
+    let gameRunning = false;
+
+    let bestScore = Number(localStorage.getItem("bestScore")) || 0;
+    let scoreHistory = JSON.parse(localStorage.getItem("scoreHistory") || "[]");
+    let selectedColor = localStorage.getItem("snakeColor") || "green";
+
+    const colors = [
+      { name: "Green", id: "green", required: 0, head: "#7CFC00", body: "#228B22" },
+      { name: "Blue", id: "blue", required: 5, head: "#00BFFF", body: "#0055AA" },
+      { name: "Purple", id: "purple", required: 10, head: "#DA70D6", body: "#800080" },
+      { name: "Gold", id: "gold", required: 20, head: "#FFD700", body: "#B8860B" },
+      { name: "Rainbow", id: "rainbow", required: 30, head: "rainbow", body: "rainbow" }
+    ];
+
+    bestText.textContent = bestScore;
+
+    displayHistory();
+    displayColorButtons();
+
+    function resetGame() {
+      snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 }
+      ];
+
+      direction = { x: 1, y: 0 };
+      nextDirection = { x: 1, y: 0 };
+      score = 0;
+      secondsPlayed = 0;
+      gameRunning = true;
+
+      scoreText.textContent = score;
+      timeText.textContent = "00:00";
+
+      placeFood();
+      drawBoard();
+    }
+
+    function startNewGame() {
+      clearInterval(gameLoop);
+      clearInterval(clockLoop);
+
+      resetGame();
+
+      gameLoop = setInterval(tick, 120);
+      clockLoop = setInterval(updateClock, 1000);
+    }
+
+    function updateClock() {
+      if (!gameRunning) return;
+
+      secondsPlayed++;
+
+      const minutes = Math.floor(secondsPlayed / 60);
+      const seconds = secondsPlayed % 60;
+
+      timeText.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+    }
+
+    function placeFood() {
+      food = {
+        x: Math.floor(Math.random() * tileCount),
+        y: Math.floor(Math.random() * tileCount)
+      };
+
+      for (let part of snake) {
+        if (part.x === food.x && part.y === food.y) {
+          placeFood();
+          return;
+        }
+      }
+    }
+
+    function getSelectedColor() {
+      return colors.find(color => color.id === selectedColor);
+    }
+
+    function drawCell(x, y, color, index = 0) {
+      if (color === "rainbow") {
+        const hue = (index * 40 + score * 20) % 360;
+        ctx.fillStyle = `hsl(${hue}, 100%, 55%)`;
+      } else {
+        ctx.fillStyle = color;
+      }
+
+      ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let x = 0; x < tileCount; x++) {
+        for (let y = 0; y < tileCount; y++) {
+          ctx.strokeStyle = "rgba(255,255,255,0.08)";
+          ctx.strokeRect(x * gridSize, y * gridSize, gridSize, gridSize);
+        }
+      }
+
+      drawCell(food.x, food.y, "#ff3b30");
+
+      const color = getSelectedColor();
+
+      snake.forEach((segment, index) => {
+        drawCell(
+          segment.x,
+          segment.y,
+          index === 0 ? color.head : color.body,
+          index
+        );
+      });
+    }
+
+    function setMovementDirection(directionName) {
+      const map = {
+        up: { x: 0, y: -1 },
+        down: { x: 0, y: 1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 }
+      };
+
+      const newDir = map[directionName];
+      if (!newDir) return;
+
+      // Prevent reverse direction
+      if (directionName === "up" && direction.y === 1) return;
+      if (directionName === "down" && direction.y === -1) return;
+      if (directionName === "left" && direction.x === 1) return;
+      if (directionName === "right" && direction.x === -1) return;
+
+      nextDirection = newDir;
+    }
+
+    function changeDirection(event) {
+      const key = event.key.toLowerCase();
+
+      if (key === "arrowup" || key === "w") setMovementDirection("up");
+      if (key === "arrowdown" || key === "s") setMovementDirection("down");
+      if (key === "arrowleft" || key === "a") setMovementDirection("left");
+      if (key === "arrowright" || key === "d") setMovementDirection("right");
+    }
+
+    function tick() {
+      direction = nextDirection;
+
+      const head = {
+        x: snake[0].x + direction.x,
+        y: snake[0].y + direction.y
+      };
+
+      const hitWall =
+        head.x < 0 ||
+        head.x >= tileCount ||
+        head.y < 0 ||
+        head.y >= tileCount;
+
+      const hitSnake = snake.some(
+        segment => segment.x === head.x && segment.y === head.y
+      );
+
+      if (hitWall || hitSnake) {
+        endGame();
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        scoreText.textContent = score;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestText.textContent = bestScore;
+          localStorage.setItem("bestScore", bestScore);
+        }
+
+        displayColorButtons();
+        placeFood();
+      } else {
+        snake.pop();
+      }
+
+      drawBoard();
+    }
+
+    function endGame() {
+      gameRunning = false;
+
+      clearInterval(gameLoop);
+      clearInterval(clockLoop);
+
+      scoreHistory.unshift({
+        score: score,
+        time: timeText.textContent
+      });
+
+      scoreHistory = scoreHistory.slice(0, 10);
+
+      localStorage.setItem("scoreHistory", JSON.stringify(scoreHistory));
+      displayHistory();
+
+      alert(
+        "Game Over!\nScore: " +
+        score +
+        "\nTime: " +
+        timeText.textContent
+      );
+    }
+
+    function displayHistory() {
+      historyList.innerHTML = "";
+
+      if (scoreHistory.length === 0) {
+        historyList.innerHTML = "<li>No games played</li>";
+        return;
+      }
+
+      scoreHistory.forEach(game => {
+        const item = document.createElement("li");
+        item.textContent = "Score: " + game.score + " - Time: " + game.time;
+        historyList.appendChild(item);
+      });
+    }
+
+    function displayColorButtons() {
+      colorButtons.innerHTML = "";
+
+      colors.forEach(color => {
+        const unlocked = score >= color.required || bestScore >= color.required;
+
+        const button = document.createElement("button");
+        button.className = "color-button";
+
+        if (!unlocked) {
+          button.classList.add("locked");
+          button.textContent = color.name + " 🔒";
+          button.title = "Reach " + color.required + " points to unlock";
+          button.disabled = true;
+        } else {
+          button.textContent = color.name;
+          button.style.background =
+            color.id === "rainbow"
+              ? "linear-gradient(90deg, red, yellow, green, blue, purple)"
+              : color.head;
+
+          button.onclick = function () {
+            selectedColor = color.id;
+            localStorage.setItem("snakeColor", selectedColor);
+            displayColorButtons();
+            drawBoard();
+          };
+        }
+
+        if (selectedColor === color.id) {
+          button.classList.add("selected");
+        }
+
+        colorButtons.appendChild(button);
+      });
+    }
+
+    document.addEventListener("keydown", changeDirection);
+
+    document.querySelectorAll(".mobile-btn").forEach(button => {
+      button.addEventListener("click", function () {
+        const dir = this.getAttribute("data-dir");
+        setMovementDirection(dir);
+      });
+    });
+
+    startNewGame();
+  </script>
 </body>
 </html>
